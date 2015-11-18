@@ -1,0 +1,29 @@
+<head>
+  <title>Pub Graph</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+
+<body>
+  <nav class="navbar navbar-fixed-top navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Pub Graph</a>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/about">Home</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    {{> hello}}
+  </div>
+</body>
+
+<template name="hello">
+  <div class="row">
+    <div class="col-md-8">.col-md-8</div>
+    <div class="col-md-4">.col-md-4</div>
+  </div>
+</template>
