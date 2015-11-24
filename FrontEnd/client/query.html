@@ -1,0 +1,70 @@
+<template name="querybody">
+  <br/>
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-heading color-set">
+        <div class="panel-title">Database Search</div>
+      </div>
+      <div class="panel-body">
+        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default">Scientists</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default">Papers</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default">Publishers</button>
+          </div>
+        </div>
+        <br/>
+        {{> optionpaper}}
+        <hr/>
+        {{> querypaper}}
+      </div> <!-- /panel-body -->
+    </div>
+  </div>
+</template>
+
+<template name="optionpaper">
+  <div class="btn-group btn-group-justified" role="group" aria-label="...">
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-default">Basic Search</button>
+    </div>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-default">Coauthor Graph</button>
+    </div>
+  </div>
+</template>
+
+<template name="querypaper">
+  <p>Find articles and papers that have:</p>
+  <div class="input-group">
+    <span class="input-group-addon" id="basic-addon1">Keywords</span>
+    <input type="text" class="form-control" aria-describedby="basic-addon1">
+  </div>
+  <div class="input-group">
+    <span class="input-group-addon" id="basic-addon1">Author</span>
+    <input type="text" class="form-control" aria-describedby="basic-addon1">
+  </div>
+  <div class="input-group">
+    <span class="input-group-addon" id="basic-addon1">Publisher</span>
+    <input type="text" class="form-control" aria-describedby="basic-addon1">
+  </div>
+  <hr/>
+  <p>Published in the period of:</p>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">From</span>
+        <input type="text" class="form-control" aria-describedby="basic-addon1">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">To</span>
+        <input type="text" class="form-control" aria-describedby="basic-addon1">
+      </div>
+    </div>
+  </div>
+</template>
