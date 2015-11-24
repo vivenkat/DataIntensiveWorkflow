@@ -1,0 +1,14 @@
+{
+  "name": "knowledge-graph",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pushstate-server": "^1.6.0"
+  }
+}

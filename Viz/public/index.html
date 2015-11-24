@@ -1,0 +1,296 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>18-656 Knowledge Graph</title>
+  <meta name="description" content="18-656 Final Project">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.css">
+  <style>
+    #graph-container {
+      top: 55px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      position: absolute;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="react-root"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react-dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/linkurious.js/1.3.0/sigma.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/linkurious.js/1.3.0/plugins.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/linkurious.js/1.3.0/plugins/sigma.parsers.json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/linkurious.js/1.3.0/plugins/sigma.parsers.cypher.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/linkurious.js/1.3.0/plugins/sigma.layouts.forceAtlas2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/linkurious.js/1.3.0/plugins/sigma.layouts.forceLink.min.js"></script>
+
+  <script type="text/babel">
+
+    const settings = {
+      animationsTime: 1000,
+      defaultEdgeLabelSize: 12,
+      defaultLabelSize: 13,
+      dragNodeStickiness: 0.01,
+      drawEdgeLabels: true,
+      drawEdges: true,
+      edgeLabelSize: 'fixed',
+      edgeLabelThreshold: 2,
+      enableHovering: true,
+      labelAlignment: 'center',
+      labelSize: 'fixed',
+      labelThreshold: 20,
+      maxEdgeSize: 2.1,
+      maxNodeSize: 25,
+      minArrowSize: 15,
+      minNodeSize: 1,
+      scalingMode: 'outside',
+      sideMargin: 2
+    }
+
+    // ---------
+    // NavBar
+    // ---------
+
+    class NavBar extends React.Component {
+
+      constructor(props) {
+        super(props)
+        this.handleQuery = this.handleQuery.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
+      }
+
+      handleQuery(e) {
+        e.preventDefault()
+
+        const queryNumber = parseInt(e.target.dataset.tag)
+
+        switch (queryNumber) {
+
+          case 1: {
+            const name = window.prompt('', 'Abraham Silberschatz')
+            const query = `MATCH (a1:Author)-[r1:WROTE]-(p1:Publication)-[r2:WROTE]-(a2:Author) WHERE a1.name = "${name}" RETURN a1,r1,p1,r2,a2 LIMIT 20;`
+            const inputQueryElement = this.refs['input-query']
+            inputQueryElement.value = query
+            this.props.onSubmit(query)
+            break
+          }
+
+          case 2: {
+            const name = window.prompt('', 'Abraham Silberschatz')
+            const query = `MATCH (a1:Author)-[r1:WROTE]-(p1:Publication)-[r2:WROTE]-(a2:Author) MATCH (a2) -[r3:WROTE]-(p2:Publication)-[r4:WROTE]-(a3:Author) WHERE a1.name = "${name}" RETURN a1,r1,p1,r2,a2,r3,p2,r4,a3 LIMIT 20;`
+            const inputQueryElement = this.refs['input-query']
+            inputQueryElement.value = query
+            this.props.onSubmit(query)
+            break
+          }
+
+        }
+      }
+
+      handleSubmit(e) {
+        e.preventDefault()
+
+        const inputQueryElement = this.refs['input-query']
+        const query = inputQueryElement.value
+
+        if (query.length != 0) {
+          this.props.onSubmit(query)
+        }
+      }
+
+      render() {
+        return (
+          <nav className='navbar navbar-default'>
+            <div className='container-fluid'>
+              <div className='navbar-header'>
+                <button type='button' className='navbar-toggle collapsed' data-toggle='collapse' data-target='#bs-example-navbar-collapse-1' aria-expanded='false'>
+                  <span className='sr-only'>Toggle navigation</span>
+                  <span className='icon-bar' />
+                  <span className='icon-bar' />
+                  <span className='icon-bar' />
+                </button>
+                <a className='navbar-brand' href='#'>18-656 Final Project</a>
+              </div>
+              <div className='collapse navbar-collapse' id='bs-example-navbar-collapse-1'>
+                <ul className='nav navbar-nav'>
+                  <li className='dropdown'>
+                    <a href='#' className='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true' aria-expanded='false'>Queries <span className='caret'></span></a>
+                    <ul className='dropdown-menu'>
+                      <li><a href='#' data-tag={1} onClick={this.handleQuery}>Q1: Direct Collaboration Network</a></li>
+                      <li><a href='#' data-tag={2} onClick={this.handleQuery}>Q2: Multi-Depth Collaboration Network</a></li>
+                    </ul>
+                  </li>
+                </ul>
+                <ul className='nav navbar-nav navbar-right'>
+                  <li><a href='#'>About</a></li>
+                </ul>
+                <form className='navbar-form' onSubmit={this.handleSubmit}>
+                  <div className='form-group' style={{display: 'inline'}}>
+                    <div className='input-group' style={{display: 'table'}}>
+                      <input className='form-control' ref='input-query' name='search' placeholder='Cypher Query' autoComplete='off' autofocus='autofocus' type='text' />
+                      <span className='input-group-addon' style={{width: '1%'}}><span className='glyphicon glyphicon-search' /></span>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </nav>
+        )
+      }
+
+    }
+
+    class Viz extends React.Component {
+
+      constructor(props) {
+        super(props)
+        this.customizeGraph = this.customizeGraph.bind(this)
+      }
+
+      componentDidMount() {
+        const settings = this.props.settings
+
+        const sigmaInstance = this.sigmaInstance = new sigma({
+          renderer: {
+            container: document.getElementById('graph-container'),
+            type: 'canvas'
+          }, settings
+        })
+
+        var activeState = sigma.plugins.activeState(sigmaInstance)
+      	var dragListener = sigma.plugins.dragNodes(sigmaInstance, sigmaInstance.renderers[0], activeState)
+      	var select = sigma.plugins.select(sigmaInstance, activeState)
+      	var keyboard = sigma.plugins.keyboard(sigmaInstance, sigmaInstance.renderers[0])
+      	select.bindKeyboard(keyboard)
+      }
+
+      customizeGraph(s) {
+      	s.graph.nodes().forEach(function(n) {
+          var label = n.neo4j_labels[0]
+
+          switch (label) {
+            case 'Publication':
+              n.color = '#01b050'
+              n.label = n.neo4j_data.title
+              break
+            case 'Author':
+              n.color = '#ffa700'
+              n.label = n.neo4j_data.name
+              break
+          }
+
+      		n.size = 16.0
+      		n.fixed = false
+      	})
+
+        s.graph.edges().forEach(function(n) {
+          n.label = n.label
+      		n.color = '#989898'
+      		n.size = 2.1
+      	})
+
+        sigma.layouts.startForceLink(this.sigmaInstance, {
+          linLogMode: false,
+          adjustSizes: true,
+          worker: true,
+          autoStop: true,
+          background: true,
+          scalingRatio: 1,
+          gravity: 1,
+          easing: 'cubicInOut',
+          nodeSiblingsScale: 2,
+          barnesHutOptimize: true,
+          strongGravityMode: true
+    		})
+
+        var cam = this.sigmaInstance.camera
+
+        sigma.misc.animation.camera(cam, {
+      		ratio: 1
+      	})
+
+        this.sigmaInstance.refresh()
+      }
+
+      componentWillReceiveProps(nextProps) {
+        sigma.neo4j.cypher({
+          url: this.props.url,
+          user: this.props.user,
+          password: this.props.password
+        }, nextProps.query,
+          this.sigmaInstance,
+          this.customizeGraph
+        )
+      }
+
+      render() {
+        return (
+          <div id='container'>
+            <div id='graph-container' />
+          </div>
+        )
+      }
+
+    }
+
+    // ---------
+    // App
+    // ---------
+
+    class App extends React.Component {
+
+      constructor(props) {
+        super(props)
+        this.handleSubmit = this.handleSubmit.bind(this)
+
+        this.state = {
+          query: ''
+        }
+      }
+
+      handleSubmit(query) {
+        this.setState({
+          query: query
+        })
+      }
+
+      render() {
+        return (
+          <div>
+            <NavBar onSubmit={this.handleSubmit} />
+            <Viz
+              url={this.props.url}
+              user={this.props.user}
+              password={this.props.password}
+              settings={this.props.settings}
+              query={this.state.query}
+            />
+          </div>
+        )
+      }
+
+    }
+
+    ReactDOM.render(
+      <App
+        url='http://bekti.io:7474'
+        user='neo4j'
+        password='root'
+        settings={settings}
+      />,
+      document.getElementById('react-root')
+    )
+
+
+    // var query = 'MATCH (a1:Author)-[r1:WROTE]-(p1:Publication)-[r2:WROTE]-(a2:Author) WHERE a1.name = "Won Kim" RETURN a1,r1,p1,r2,a2 LIMIT 10;'
+    // var query2 = 'MATCH (a1:Author)-[r1:WROTE]-(p1:Publication)-[r2:WROTE]-(a2:Author) MATCH (a2) -[r3:WROTE]-(p2:Publication)-[r4:WROTE]-(a3:Author) WHERE a1.name = "Won Kim" RETURN a1,r1,p1,r2,a2,r3,p2,r4,a3 LIMIT 10;'
+
+  </script>
+</body>
+</html>
