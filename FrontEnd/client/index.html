@@ -1,0 +1,39 @@
+<head>
+  <title>Data Intensive</title>
+</head>
+
+<body>
+</body>
+
+<template name="mainpage">
+  {{> header}}
+  {{> mainbody}}
+</template>
+
+<template name="querypage">
+  {{> header}}
+  {{> querybody}}
+</template>
+
+<template name="header">
+  <nav class="navbar navbar-fixed-top navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">{{> projectname}}</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="{{activeCheck undefined}}"><a href="/">Home</a></li>
+          <li class="{{activeCheck 'query'}}"><a href="/query">Database</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">{{>loginButtons align="left"}}</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<template name="projectname">
+  PubGraph
+</template>

@@ -1,0 +1,19 @@
+/* CSS declarations go here */
+body {
+  padding-top: 50px;
+}
+
+.color-set {
+  background: #6f5499;
+  color: #ffffff;
+}
+
+.panel-heading.color-set {
+  background: #6f5499;
+  color: #ffffff;
+}
+
+.input-group-addon {
+  min-width:120px;
+  text-align:left;
+}
