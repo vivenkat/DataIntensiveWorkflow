@@ -1,0 +1,15 @@
+body {
+  padding-top: 50px;
+}
+
+#jumbo {
+  margin-bottom: 0;
+}
+
+#mynetwork {
+  width: 100%;
+  height: 700px;
+  font-size: 10pt;
+  background: #eeeeee;
+  margin-bottom: 30px;
+}

@@ -1,0 +1,77 @@
+<head>
+  <title>Data Intensive</title>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.css" rel="stylesheet" type="text/css"/>
+
+</head>
+
+<body>
+  {{> header}}
+  {{#if currentUser}}
+    {{> query}}
+  {{else}}
+    {{> landing}}
+  {{/if}}
+  {{> network}}
+</body>
+
+<template name="header">
+  <nav class="navbar navbar-fixed-top navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Neo4j x DBLP</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/">Home</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">{{> loginButtons align="left"}}</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<template name="landing">
+  <div class="jumbotron" id="jumbo">
+    <div class="container">
+      <h1>Neo4j x DBLP</h1>
+      <p>Powered by neo4j and dblp, this site is a web interface for our database of computer science publications from journals and conferences.</p>
+      <p>Please sign in or join to continue.</p>
+    </div>
+  </div>
+</template>
+
+<template name="query">
+  <div class="container">
+    <h4>Hello, {{currentUser.username}}</h4>
+    <p>Select a query type</p>
+    <div class="row">
+      <div class="col-md-4">
+        <select id='query-select' class="form-control">
+          <option value="custom">Custom cypher query</option>
+          <option value="movie-person">People related to a movie</option>
+          <option value="person-movie">Movies related to a persons</option>
+          <option value="person-person">People related to a person through movies</option>
+        </select>
+      </div>
+      <div class="col-md-8">
+        <input id='str-input' class="form-control" type="text" placeholder="Cypher query">
+      </div>
+    </div>
+    <hr/>
+    <input id="cypher-text" class="form-control" type="text" readonly>
+    <br/>
+    <button class="btn btn-primary" type="submit">Run query</button>
+    <br/>
+    <br/>
+  </div>
+</template>
+
+<template name="network">
+  <div class="container">
+    <div id="mynetwork"></div>
+  </div>
+</template>
